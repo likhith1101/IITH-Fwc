@@ -1,0 +1,70 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage[none]{hyphenat}
+\usepackage[english]{babel}
+\usepackage{caption}
+\usepackage[parfill]{parskip}
+\usepackage{hyperref}
+\usepackage{import}
+\usepackage{booktabs}
+\def\inputGnumericTable{}
+\usepackage{color}                                            
+    \usepackage{array}                                            
+    \usepackage{longtable}                                        
+    \usepackage{calc}                                             
+    \usepackage{multirow}                                         
+    \usepackage{hhline}                                           
+    \usepackage{ifthen}
+\usepackage{array}
+\usepackage{amsmath}  
+\usepackage{parallel,enumitem}
+\usepackage{listings}
+\lstset{
+language=tex,
+frame=single,
+breaklines=true
+}
+ 
+\begin{document}
+
+\section{Flash STM32F103C8 using USB2UART}
+
+\renewcommand{\theequation}{\theenumi}
+\renewcommand{\thefigure}{\theenumi}
+\begin{enumerate}[label=\thesubsection.\arabic*.,ref=\thesubsection.\theenumi]
+\numberwithin{equation}{enumi}
+\numberwithin{figure}{enumi}
+\numberwithin{table}{enumi}
+\item Make connections as shown in Table \ref{tab:stm32-usb2uart} and modify the circuit accordingly
+			\begin{table}[!h]
+			\centering
+		\input{tables/stm32-usb2uart.tex}
+		\caption{}
+		\label{tab:stm32-usb2uart}
+	\end{table}
+\item Create a src folder and inside src folder, create a source code in c/c++ which has to be flashed into stm32f103c8 (for example: src/blink.c).
+
+\item Create a platformio.ini file by adding the lines
+\begin{lstlisting}
+[env:bluepill_f103c8]
+platform = ststm32
+board = bluepill_f103c8
+framework = stm32cube
+upload_protocol=serial
+upload_port=/dev/ttyUSB0
+upload_speed=115200
+\end{lstlisting}
+
+\item Before flashing, make sure that stm32 board is in bootloader mode.
+
+\item To make the stm32 board into bootloader mode, by setting the BOOT0 pin of stm32 board to LOW (connected to GND). This configuration will ensure that the microcontroller enters the system memory bootloader on reset.
+
+\item After executing 
+\begin{lstlisting}
+pio run -t upload
+\end{lstlisting}
+The inbuilt LED present on the stm32f103c8 will start blinking.
+
+\item After flashing, the inbuilt LED present on the stm32f103c8 will start blinking and then remove the BOOT0-GND connection after you have completed the bootloader operations and can run your code from the main flash memory.
+\end{enumerate}
+\end{document}
